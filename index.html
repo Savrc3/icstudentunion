@@ -282,6 +282,8 @@
     }
 
     .photo-carousel {
+      --slide-width: min(68%, 430px);
+      --slide-gap: 18px;
       min-width: 0;
       align-self: center;
       position: relative;
@@ -294,6 +296,11 @@
         inset 0 0 0 1px rgba(255, 255, 255, 0.08),
         0 18px 44px rgba(20, 35, 59, 0.18);
       overflow: hidden;
+      perspective: 1200px;
+    }
+
+    .photo-carousel::selection {
+      background: transparent;
     }
 
     .photo-carousel::before,
@@ -321,12 +328,14 @@
 
     .carousel-track {
       display: flex;
-      gap: 16px;
-      padding: 42px 18px;
+      gap: var(--slide-gap);
+      padding: 52px max(18px, calc((100% - var(--slide-width)) / 2));
       overflow-x: auto;
       scroll-behavior: smooth;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior: contain;
       scrollbar-width: none;
-      cursor: grab;
+      cursor: default;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.07));
     }
@@ -335,18 +344,21 @@
     .photo-carousel:hover .carousel-track { cursor: ew-resize; }
 
     .slide {
-      flex: 0 0 calc((100% - 16px) / 2);
+      flex: 0 0 var(--slide-width);
       min-width: 0;
       aspect-ratio: 4 / 3;
       overflow: hidden;
       border-radius: 6px;
       background: #dceaf2;
       border: 5px solid rgba(255, 255, 255, 0.9);
+      scroll-snap-align: center;
       box-shadow:
-        0 12px 26px rgba(0, 0, 0, 0.34),
+        0 10px 22px rgba(0, 0, 0, 0.32),
         inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-      transform: translateZ(0);
-      transition: transform 0.45s ease, box-shadow 0.45s ease, filter 0.45s ease;
+      filter: saturate(0.58) brightness(0.56);
+      opacity: 0.42;
+      transform: translateY(10px) scale(0.78) rotateY(0deg);
+      transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
     }
 
     .slide img {
@@ -357,30 +369,55 @@
       transition: transform 0.65s ease;
     }
 
-    .photo-carousel.is-paused .slide {
-      filter: saturate(0.92) brightness(0.94);
+    .slide.is-neighbor {
+      filter: saturate(0.72) brightness(0.68);
+      opacity: 0.62;
+      transform: translateY(4px) scale(0.86);
+    }
+
+    .slide.is-active {
+      filter: saturate(1.08) brightness(1.04);
+      opacity: 1;
+      transform: translateY(-2px) scale(1);
+      box-shadow:
+        0 24px 44px rgba(0, 0, 0, 0.42),
+        0 0 0 1px rgba(82, 183, 204, 0.32),
+        inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+      z-index: 2;
+    }
+
+    .photo-carousel.is-paused .slide:not(.is-active):not(.is-neighbor) {
+      filter: saturate(0.48) brightness(0.48);
+      opacity: 0.32;
     }
 
     .photo-carousel.is-paused .slide:hover {
-      transform: translateY(-6px) scale(1.025);
-      filter: saturate(1.08) brightness(1.02);
+      transform: translateY(-8px) scale(0.92);
+      filter: saturate(0.95) brightness(0.92);
+      opacity: 0.82;
       box-shadow:
         0 22px 38px rgba(0, 0, 0, 0.38),
         0 0 0 1px rgba(82, 183, 204, 0.28);
+    }
+
+    .photo-carousel.is-paused .slide.is-active:hover {
+      transform: translateY(-10px) scale(1.035);
+      filter: saturate(1.16) brightness(1.08);
+      opacity: 1;
     }
 
     .photo-carousel.is-paused .slide:hover img {
       transform: scale(1.075);
     }
 
-    .photo-carousel.is-stepping .slide {
+    .photo-carousel.is-stepping .slide.is-active {
       animation: filmPulse 0.72s cubic-bezier(.2, .8, .2, 1);
     }
 
     @keyframes filmPulse {
       0% { transform: translateY(0) scale(1); filter: brightness(1); }
-      42% { transform: translateY(-4px) scale(1.012); filter: brightness(1.05); }
-      100% { transform: translateY(0) scale(1); filter: brightness(1); }
+      42% { transform: translateY(-8px) scale(1.025); filter: brightness(1.08); }
+      100% { transform: translateY(-2px) scale(1); filter: brightness(1.04); }
     }
 
     .join-section {
@@ -517,8 +554,18 @@
         padding: 22px;
       }
 
+      .photo-carousel {
+        --slide-width: 76%;
+        --slide-gap: 14px;
+      }
+
+      .carousel-track {
+        padding-top: 46px;
+        padding-bottom: 46px;
+      }
+
       .slide {
-        flex-basis: 78%;
+        border-width: 4px;
       }
 
       .join-section {
@@ -688,10 +735,17 @@
       if (!track) return;
 
       const originals = Array.from(track.children);
+      if (originals.length === 0) return;
+
+      originals.forEach((item, index) => {
+        item.dataset.slideIndex = String(index);
+      });
+
       for (let round = 0; round < 2; round += 1) {
-        originals.forEach((item) => {
+        originals.forEach((item, index) => {
           const clone = item.cloneNode(true);
           clone.setAttribute("aria-hidden", "true");
+          clone.dataset.slideIndex = String(index);
           track.appendChild(clone);
         });
       }
@@ -699,6 +753,7 @@
       let paused = false;
       let wheelLocked = false;
       let settleTimer = 0;
+      let activeFrame = 0;
 
       const getStep = () => {
         const first = track.querySelector(".slide");
@@ -710,6 +765,40 @@
 
       const getCycleWidth = () => originals.length * getStep();
 
+      const getNearestSlide = () => {
+        const slides = Array.from(track.querySelectorAll(".slide"));
+        const viewportCenter = track.scrollLeft + track.clientWidth / 2;
+        return slides.reduce((nearest, slide) => {
+          const rect = slide.getBoundingClientRect();
+          const center = slide.offsetLeft + rect.width / 2;
+          const distance = Math.abs(center - viewportCenter);
+          return distance < nearest.distance ? { slide, distance } : nearest;
+        }, { slide: slides[0], distance: Number.POSITIVE_INFINITY }).slide;
+      };
+
+      const updateActiveSlides = () => {
+        const activeSlide = getNearestSlide();
+        if (!activeSlide) return;
+
+        const activeIndex = Number(activeSlide.dataset.slideIndex || 0);
+        const previousIndex = (activeIndex - 1 + originals.length) % originals.length;
+        const nextIndex = (activeIndex + 1) % originals.length;
+
+        track.querySelectorAll(".slide").forEach((slide) => {
+          const slideIndex = Number(slide.dataset.slideIndex || 0);
+          slide.classList.toggle("is-active", slide === activeSlide);
+          slide.classList.toggle("is-neighbor", slide !== activeSlide && (slideIndex === previousIndex || slideIndex === nextIndex));
+        });
+      };
+
+      const scheduleActiveUpdate = () => {
+        if (activeFrame) return;
+        activeFrame = window.requestAnimationFrame(() => {
+          activeFrame = 0;
+          updateActiveSlides();
+        });
+      };
+
       const normalize = () => {
         const cycle = getCycleWidth();
         if (cycle <= 0) return;
@@ -719,11 +808,15 @@
         } else if (track.scrollLeft < cycle) {
           track.scrollLeft += cycle;
         }
+        updateActiveSlides();
       };
 
       const resetToMiddle = () => {
         const cycle = getCycleWidth();
-        if (cycle > 0) track.scrollLeft = cycle;
+        if (cycle > 0) {
+          track.scrollLeft = cycle;
+          updateActiveSlides();
+        }
       };
 
       const moveBySlide = (direction) => {
@@ -738,10 +831,16 @@
           track.scrollLeft -= cycle;
         }
 
+        const slides = Array.from(track.querySelectorAll(".slide"));
+        const currentSlide = getNearestSlide();
+        const currentPosition = Math.max(0, slides.indexOf(currentSlide));
+        const targetSlide = slides[currentPosition + direction];
+        if (!targetSlide) return;
+
         carousel.classList.add("is-stepping");
         window.clearTimeout(settleTimer);
         track.scrollTo({
-          left: track.scrollLeft + direction * step,
+          left: targetSlide.offsetLeft - (track.clientWidth - targetSlide.getBoundingClientRect().width) / 2,
           behavior: "smooth"
         });
 
@@ -785,6 +884,7 @@
       window.requestAnimationFrame(resetToMiddle);
       window.addEventListener("load", resetToMiddle, { once: true });
       window.addEventListener("resize", resetToMiddle);
+      track.addEventListener("scroll", scheduleActiveUpdate, { passive: true });
       carousel.addEventListener("remove", () => window.clearInterval(autoplay));
     });
   </script>
