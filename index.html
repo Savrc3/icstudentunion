@@ -327,38 +327,47 @@
     }
 
     .carousel-track {
-      display: flex;
-      gap: var(--slide-gap);
-      padding: 52px max(18px, calc((100% - var(--slide-width)) / 2));
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      scroll-snap-type: x mandatory;
+      display: grid;
+      grid-template-areas: "stage";
+      place-items: center;
+      gap: 0;
+      padding: 52px 18px;
+      overflow: hidden;
       overscroll-behavior: contain;
-      scrollbar-width: none;
       cursor: default;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.07));
+    }
+
+    .carousel-track::before {
+      content: "";
+      grid-area: stage;
+      width: var(--slide-width);
+      aspect-ratio: 4 / 3;
+      pointer-events: none;
     }
 
     .carousel-track::-webkit-scrollbar { display: none; }
     .photo-carousel:hover .carousel-track { cursor: ew-resize; }
 
     .slide {
-      flex: 0 0 var(--slide-width);
+      grid-area: stage;
+      width: var(--slide-width);
       min-width: 0;
       aspect-ratio: 4 / 3;
       overflow: hidden;
       border-radius: 6px;
       background: #dceaf2;
       border: 5px solid rgba(255, 255, 255, 0.9);
-      scroll-snap-align: center;
       box-shadow:
         0 10px 22px rgba(0, 0, 0, 0.32),
         inset 0 0 0 1px rgba(0, 0, 0, 0.1);
       filter: saturate(0.58) brightness(0.56);
-      opacity: 0.42;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
       transform: translateY(10px) scale(0.78) rotateY(0deg);
-      transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease, opacity 0.5s ease;
+      transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease, opacity 0.5s ease, visibility 0.5s ease;
     }
 
     .slide img {
@@ -372,12 +381,24 @@
     .slide.is-neighbor {
       filter: saturate(0.72) brightness(0.68);
       opacity: 0.62;
-      transform: translateY(4px) scale(0.86);
+      pointer-events: auto;
+      visibility: visible;
+      z-index: 1;
+    }
+
+    .slide.is-prev {
+      transform: translateX(-58%) translateY(4px) scale(0.86);
+    }
+
+    .slide.is-next {
+      transform: translateX(58%) translateY(4px) scale(0.86);
     }
 
     .slide.is-active {
       filter: saturate(1.08) brightness(1.04);
       opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
       transform: translateY(-2px) scale(1);
       box-shadow:
         0 24px 44px rgba(0, 0, 0, 0.42),
@@ -404,6 +425,14 @@
       transform: translateY(-10px) scale(1.035);
       filter: saturate(1.16) brightness(1.08);
       opacity: 1;
+    }
+
+    .photo-carousel.is-paused .slide.is-prev:hover {
+      transform: translateX(-58%) translateY(-8px) scale(0.9);
+    }
+
+    .photo-carousel.is-paused .slide.is-next:hover {
+      transform: translateX(58%) translateY(-8px) scale(0.9);
     }
 
     .photo-carousel.is-paused .slide:hover img {
@@ -562,6 +591,22 @@
       .carousel-track {
         padding-top: 46px;
         padding-bottom: 46px;
+      }
+
+      .slide.is-prev {
+        transform: translateX(-56%) translateY(4px) scale(0.84);
+      }
+
+      .slide.is-next {
+        transform: translateX(56%) translateY(4px) scale(0.84);
+      }
+
+      .photo-carousel.is-paused .slide.is-prev:hover {
+        transform: translateX(-56%) translateY(-8px) scale(0.88);
+      }
+
+      .photo-carousel.is-paused .slide.is-next:hover {
+        transform: translateX(56%) translateY(-8px) scale(0.88);
       }
 
       .slide {
@@ -734,120 +779,39 @@
       const track = carousel.querySelector(".carousel-track");
       if (!track) return;
 
-      const originals = Array.from(track.children);
-      if (originals.length === 0) return;
-
-      originals.forEach((item, index) => {
-        item.dataset.slideIndex = String(index);
-      });
-
-      for (let round = 0; round < 2; round += 1) {
-        originals.forEach((item, index) => {
-          const clone = item.cloneNode(true);
-          clone.setAttribute("aria-hidden", "true");
-          clone.dataset.slideIndex = String(index);
-          track.appendChild(clone);
-        });
-      }
+      const slides = Array.from(track.querySelectorAll(".slide"));
+      if (slides.length === 0) return;
 
       let paused = false;
       let wheelLocked = false;
       let settleTimer = 0;
-      let activeFrame = 0;
-
-      const getStep = () => {
-        const first = track.querySelector(".slide");
-        if (!first) return track.clientWidth;
-        const styles = window.getComputedStyle(track);
-        const gap = Number.parseFloat(styles.columnGap || styles.gap || "0") || 0;
-        return first.getBoundingClientRect().width + gap;
-      };
-
-      const getCycleWidth = () => originals.length * getStep();
-
-      const getNearestSlide = () => {
-        const slides = Array.from(track.querySelectorAll(".slide"));
-        const viewportCenter = track.scrollLeft + track.clientWidth / 2;
-        return slides.reduce((nearest, slide) => {
-          const rect = slide.getBoundingClientRect();
-          const center = slide.offsetLeft + rect.width / 2;
-          const distance = Math.abs(center - viewportCenter);
-          return distance < nearest.distance ? { slide, distance } : nearest;
-        }, { slide: slides[0], distance: Number.POSITIVE_INFINITY }).slide;
-      };
+      let currentIndex = 0;
+      let isMoving = false;
 
       const updateActiveSlides = () => {
-        const activeSlide = getNearestSlide();
-        if (!activeSlide) return;
+        const previousIndex = (currentIndex - 1 + slides.length) % slides.length;
+        const nextIndex = (currentIndex + 1) % slides.length;
 
-        const activeIndex = Number(activeSlide.dataset.slideIndex || 0);
-        const previousIndex = (activeIndex - 1 + originals.length) % originals.length;
-        const nextIndex = (activeIndex + 1) % originals.length;
-
-        track.querySelectorAll(".slide").forEach((slide) => {
-          const slideIndex = Number(slide.dataset.slideIndex || 0);
-          slide.classList.toggle("is-active", slide === activeSlide);
-          slide.classList.toggle("is-neighbor", slide !== activeSlide && (slideIndex === previousIndex || slideIndex === nextIndex));
+        slides.forEach((slide, index) => {
+          slide.classList.toggle("is-active", index === currentIndex);
+          slide.classList.toggle("is-neighbor", index === previousIndex || index === nextIndex);
+          slide.classList.toggle("is-prev", index === previousIndex);
+          slide.classList.toggle("is-next", index === nextIndex);
         });
-      };
-
-      const scheduleActiveUpdate = () => {
-        if (activeFrame) return;
-        activeFrame = window.requestAnimationFrame(() => {
-          activeFrame = 0;
-          updateActiveSlides();
-        });
-      };
-
-      const normalize = () => {
-        const cycle = getCycleWidth();
-        if (cycle <= 0) return;
-
-        if (track.scrollLeft >= cycle * 2) {
-          track.scrollLeft -= cycle;
-        } else if (track.scrollLeft < cycle) {
-          track.scrollLeft += cycle;
-        }
-        updateActiveSlides();
-      };
-
-      const resetToMiddle = () => {
-        const cycle = getCycleWidth();
-        if (cycle > 0) {
-          track.scrollLeft = cycle;
-          updateActiveSlides();
-        }
       };
 
       const moveBySlide = (direction) => {
-        normalize();
-        const cycle = getCycleWidth();
-        const step = getStep();
-        if (!step || !cycle) return;
-
-        if (direction < 0 && track.scrollLeft < cycle + step * 0.5) {
-          track.scrollLeft += cycle;
-        } else if (direction > 0 && track.scrollLeft > cycle * 2 - step * 1.5) {
-          track.scrollLeft -= cycle;
-        }
-
-        const slides = Array.from(track.querySelectorAll(".slide"));
-        const currentSlide = getNearestSlide();
-        const currentPosition = Math.max(0, slides.indexOf(currentSlide));
-        const targetSlide = slides[currentPosition + direction];
-        if (!targetSlide) return;
-
+        if (isMoving) return;
+        isMoving = true;
+        currentIndex = (currentIndex + direction + slides.length) % slides.length;
         carousel.classList.add("is-stepping");
         window.clearTimeout(settleTimer);
-        track.scrollTo({
-          left: targetSlide.offsetLeft - (track.clientWidth - targetSlide.getBoundingClientRect().width) / 2,
-          behavior: "smooth"
-        });
+        updateActiveSlides();
 
         settleTimer = window.setTimeout(() => {
-          normalize();
           carousel.classList.remove("is-stepping");
-        }, 760);
+          isMoving = false;
+        }, 560);
       };
 
       const autoplay = window.setInterval(() => {
@@ -881,10 +845,7 @@
         }, 620);
       }, { passive: false });
 
-      window.requestAnimationFrame(resetToMiddle);
-      window.addEventListener("load", resetToMiddle, { once: true });
-      window.addEventListener("resize", resetToMiddle);
-      track.addEventListener("scroll", scheduleActiveUpdate, { passive: true });
+      updateActiveSlides();
       carousel.addEventListener("remove", () => window.clearInterval(autoplay));
     });
   </script>
