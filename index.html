@@ -297,6 +297,7 @@
         0 18px 44px rgba(20, 35, 59, 0.18);
       overflow: hidden;
       perspective: 1200px;
+      touch-action: pan-y;
     }
 
     .photo-carousel::selection {
@@ -333,8 +334,9 @@
       gap: 0;
       padding: 52px 18px;
       overflow: hidden;
-      overscroll-behavior: contain;
       cursor: default;
+      touch-action: pan-y;
+      user-select: none;
       background:
         linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.07));
     }
@@ -368,6 +370,7 @@
       visibility: hidden;
       transform: translateY(10px) scale(0.78) rotateY(0deg);
       transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease, opacity 0.5s ease, visibility 0.5s ease;
+      touch-action: pan-y;
     }
 
     .slide img {
@@ -785,8 +788,14 @@
       let paused = false;
       let wheelLocked = false;
       let settleTimer = 0;
+      let touchResumeTimer = 0;
       let currentIndex = 0;
       let isMoving = false;
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchPointerId = null;
+      let touchMode = "";
+      let suppressClick = false;
 
       const updateActiveSlides = () => {
         const previousIndex = (currentIndex - 1 + slides.length) % slides.length;
@@ -812,6 +821,20 @@
           carousel.classList.remove("is-stepping");
           isMoving = false;
         }, 560);
+      };
+
+      const pauseForTouch = () => {
+        window.clearTimeout(touchResumeTimer);
+        paused = true;
+        carousel.classList.add("is-paused");
+      };
+
+      const resumeAfterTouch = () => {
+        window.clearTimeout(touchResumeTimer);
+        touchResumeTimer = window.setTimeout(() => {
+          paused = false;
+          carousel.classList.remove("is-paused");
+        }, 1500);
       };
 
       const autoplay = window.setInterval(() => {
@@ -844,6 +867,69 @@
           wheelLocked = false;
         }, 620);
       }, { passive: false });
+
+      carousel.addEventListener("pointerdown", (event) => {
+        if (event.pointerType !== "touch") return;
+        touchPointerId = event.pointerId;
+        touchStartX = event.clientX;
+        touchStartY = event.clientY;
+        touchMode = "";
+        suppressClick = false;
+        pauseForTouch();
+      });
+
+      carousel.addEventListener("pointermove", (event) => {
+        if (event.pointerType !== "touch" || event.pointerId !== touchPointerId) return;
+
+        const deltaX = event.clientX - touchStartX;
+        const deltaY = event.clientY - touchStartY;
+        const absX = Math.abs(deltaX);
+        const absY = Math.abs(deltaY);
+
+        if (!touchMode && (absX > 12 || absY > 12)) {
+          touchMode = absX > absY * 1.25 ? "horizontal" : "vertical";
+        }
+
+        if (touchMode === "horizontal") {
+          event.preventDefault();
+        }
+      }, { passive: false });
+
+      const finishTouch = (event) => {
+        if (event.pointerType !== "touch" || event.pointerId !== touchPointerId) return;
+
+        const deltaX = event.clientX - touchStartX;
+        const deltaY = event.clientY - touchStartY;
+        const absX = Math.abs(deltaX);
+        const absY = Math.abs(deltaY);
+
+        if (touchMode === "horizontal" && absX > 42 && absX > absY * 1.2) {
+          suppressClick = true;
+          moveBySlide(deltaX < 0 ? 1 : -1);
+        }
+
+        touchPointerId = null;
+        touchMode = "";
+        resumeAfterTouch();
+      };
+
+      carousel.addEventListener("pointerup", finishTouch);
+      carousel.addEventListener("pointercancel", finishTouch);
+
+      carousel.addEventListener("click", (event) => {
+        if (suppressClick) {
+          suppressClick = false;
+          return;
+        }
+
+        const slide = event.target.closest(".slide");
+        if (!slide) return;
+        if (slide.classList.contains("is-prev")) {
+          moveBySlide(-1);
+        } else if (slide.classList.contains("is-next")) {
+          moveBySlide(1);
+        }
+      });
 
       updateActiveSlides();
       carousel.addEventListener("remove", () => window.clearInterval(autoplay));
