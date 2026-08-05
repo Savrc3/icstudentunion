@@ -3,937 +3,132 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>集成电路学院学生会</title>
-  <meta name="description" content="山东大学集成电路学院学生会部门介绍与纳新信息">
-  <style>
-    :root {
-      --background: #f3f8fc;
-      --foreground: #14233b;
-      --deep-blue: #0c477a;
-      --blue: #176fa5;
-      --cyan: #52b7cc;
-      --red: #a30b13;
-      --brick: #88413b;
-      --paper: rgba(255, 255, 255, 0.94);
-      --line: rgba(12, 71, 122, 0.16);
-      --muted: rgba(20, 35, 59, 0.72);
-      --shadow: 0 24px 70px rgba(20, 35, 59, 0.14);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--background);
-      color: var(--foreground);
-      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; max-width: 100%; }
-    h1, h2, h3, p { margin-top: 0; }
-
-    .hero, .departments-section, .join-section {
-      position: relative;
-    }
-
-    .hero {
-      min-height: 96vh;
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      background: #dceff8;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-    }
-
-    .hero-bg::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(90deg, rgba(244, 249, 252, 0.98) 0%, rgba(244, 249, 252, 0.86) 36%, rgba(244, 249, 252, 0.24) 77%),
-        linear-gradient(180deg, rgba(82, 183, 204, 0.12), rgba(136, 65, 59, 0.24));
-    }
-
-    .hero-bg img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center right;
-    }
-
-    .hero-inner, .departments-section, .join-section {
-      width: min(1160px, calc(100% - 40px));
-      margin: 0 auto;
-      z-index: 1;
-    }
-
-    .hero-inner {
-      position: relative;
-      padding: 76px 0 104px;
-    }
-
-    .hero-copy {
-      max-width: 980px;
-    }
-
-    .eyebrow {
-      margin-bottom: 16px;
-      color: var(--deep-blue);
-      font-size: 0.82rem;
-      font-weight: 900;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .hero-title {
-      margin-bottom: 32px;
-      color: var(--foreground);
-      font-size: clamp(3.4rem, 7.6vw, 7.4rem);
-      line-height: 1.04;
-      letter-spacing: 0;
-    }
-
-    .college-line {
-      display: block;
-      white-space: nowrap;
-    }
-
-    .student-union-line {
-      display: flex;
-      align-items: center;
-      gap: clamp(8px, 1vw, 14px);
-      white-space: nowrap;
-    }
-
-    .student-union-line img {
-      flex: 0 0 auto;
-      width: clamp(68px, 7vw, 108px);
-      height: clamp(68px, 7vw, 108px);
-      object-fit: contain;
-      border-radius: 50%;
-      mix-blend-mode: multiply;
-    }
-
-    .lead {
-      max-width: 630px;
-      margin-bottom: 34px;
-      color: rgba(20, 35, 59, 0.76);
-      font-size: 1.08rem;
-      line-height: 1.85;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-    }
-
-    .primary, .secondary {
-      min-height: 50px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 13px 25px;
-      font-weight: 900;
-      border: 1px solid transparent;
-    }
-
-    .primary {
-      background: linear-gradient(135deg, var(--red), var(--brick));
-      color: white;
-      box-shadow: 0 18px 36px rgba(136, 65, 59, 0.28);
-    }
-
-    .secondary {
-      background: rgba(255, 255, 255, 0.92);
-      color: var(--deep-blue);
-      border-color: rgba(255, 255, 255, 0.98);
-      box-shadow: 0 18px 36px rgba(20, 35, 59, 0.08);
-    }
-
-    .departments-section {
-      padding: 88px 0;
-    }
-
-    .section-title {
-      margin-bottom: 30px;
-    }
-
-    h2 {
-      margin-bottom: 0;
-      color: var(--foreground);
-      font-size: clamp(2.4rem, 5vw, 4.9rem);
-      line-height: 1.05;
-      letter-spacing: 0;
-    }
-
-    h3 {
-      margin-bottom: 16px;
-      color: var(--deep-blue);
-      font-size: clamp(1.7rem, 3.2vw, 2.6rem);
-      line-height: 1.15;
-    }
-
-    .department-tabs {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      margin-bottom: 26px;
-      padding: 14px 0;
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      background: rgba(243, 248, 252, 0.92);
-      backdrop-filter: blur(14px);
-    }
-
-    .department-tabs a {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 10px 16px;
-      background: white;
-      border: 1px solid var(--line);
-      color: var(--deep-blue);
-      font-weight: 900;
-      white-space: nowrap;
-    }
-
-    .department-list {
-      display: grid;
-      gap: 24px;
-    }
-
-    .department-panel {
-      scroll-margin-top: 92px;
-      display: grid;
-      grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1fr);
-      gap: clamp(22px, 4vw, 40px);
-      padding: clamp(24px, 4vw, 44px);
-      overflow: hidden;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background:
-        radial-gradient(circle at top right, rgba(82, 183, 204, 0.18), transparent 36%),
-        var(--paper);
-      box-shadow: 0 18px 52px rgba(20, 35, 59, 0.08);
-    }
-
-    .department-panel:nth-child(2n) {
-      background:
-        radial-gradient(circle at top right, rgba(163, 11, 19, 0.1), transparent 35%),
-        var(--paper);
-    }
-
-    .department-heading {
-      margin-bottom: 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-
-    .department-heading span, .feature-row span {
-      min-height: 32px;
-      display: inline-flex;
-      align-items: center;
-      border-radius: 999px;
-      padding: 6px 12px;
-      background: rgba(12, 71, 122, 0.08);
-      color: var(--deep-blue);
-      font-size: 0.9rem;
-      font-weight: 900;
-    }
-
-    .department-index {
-      margin: 0;
-      color: var(--red);
-      font-size: 0.9rem;
-      font-weight: 900;
-    }
-
-    .department-slogan {
-      margin-bottom: 18px;
-      color: var(--red);
-      font-size: clamp(1.16rem, 2vw, 1.5rem);
-      line-height: 1.7;
-      font-weight: 900;
-    }
-
-    .department-intro {
-      margin-bottom: 22px;
-      color: var(--muted);
-      font-size: 1.02rem;
-      line-height: 1.85;
-    }
-
-    .feature-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-
-    .photo-carousel {
-      --slide-width: min(68%, 430px);
-      --slide-gap: 18px;
-      min-width: 0;
-      align-self: center;
-      position: relative;
-      border-radius: 8px;
-      background:
-        linear-gradient(90deg, rgba(255, 255, 255, 0.06), transparent 18%, transparent 82%, rgba(255, 255, 255, 0.06)),
-        #111827;
-      border: 1px solid rgba(12, 71, 122, 0.18);
-      box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-        0 18px 44px rgba(20, 35, 59, 0.18);
-      overflow: hidden;
-      perspective: 1200px;
-      touch-action: pan-y;
-    }
-
-    .photo-carousel::selection {
-      background: transparent;
-    }
-
-    .photo-carousel::before,
-    .photo-carousel::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 18px;
-      z-index: 3;
-      pointer-events: none;
-      background:
-        radial-gradient(circle, rgba(255, 255, 255, 0.92) 0 4px, transparent 4.5px) 0 50% / 28px 16px repeat-x,
-        linear-gradient(90deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-      opacity: 0.88;
-    }
-
-    .photo-carousel::before {
-      top: 10px;
-    }
-
-    .photo-carousel::after {
-      bottom: 10px;
-    }
-
-    .carousel-track {
-      display: grid;
-      grid-template-areas: "stage";
-      place-items: center;
-      gap: 0;
-      padding: 52px 18px;
-      overflow: hidden;
-      cursor: default;
-      touch-action: pan-y;
-      user-select: none;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.07), transparent 20%, transparent 80%, rgba(255, 255, 255, 0.07));
-    }
-
-    .carousel-track::before {
-      content: "";
-      grid-area: stage;
-      width: var(--slide-width);
-      aspect-ratio: 4 / 3;
-      pointer-events: none;
-    }
-
-    .carousel-track::-webkit-scrollbar { display: none; }
-    .photo-carousel:hover .carousel-track { cursor: ew-resize; }
-
-    .slide {
-      grid-area: stage;
-      width: var(--slide-width);
-      min-width: 0;
-      aspect-ratio: 4 / 3;
-      overflow: hidden;
-      border-radius: 6px;
-      background: #dceaf2;
-      border: 5px solid rgba(255, 255, 255, 0.9);
-      box-shadow:
-        0 10px 22px rgba(0, 0, 0, 0.32),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.1);
-      filter: saturate(0.58) brightness(0.56);
-      opacity: 0;
-      pointer-events: none;
-      visibility: hidden;
-      transform: translateY(10px) scale(0.78) rotateY(0deg);
-      transition: transform 0.5s ease, box-shadow 0.5s ease, filter 0.5s ease, opacity 0.5s ease, visibility 0.5s ease;
-      touch-action: pan-y;
-    }
-
-    .slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scale(1.01);
-      transition: transform 0.65s ease;
-    }
-
-    .slide.is-neighbor {
-      filter: saturate(0.72) brightness(0.68);
-      opacity: 0.62;
-      pointer-events: auto;
-      visibility: visible;
-      z-index: 1;
-    }
-
-    .slide.is-prev {
-      transform: translateX(-58%) translateY(4px) scale(0.86);
-    }
-
-    .slide.is-next {
-      transform: translateX(58%) translateY(4px) scale(0.86);
-    }
-
-    .slide.is-active {
-      filter: saturate(1.08) brightness(1.04);
-      opacity: 1;
-      pointer-events: auto;
-      visibility: visible;
-      transform: translateY(-2px) scale(1);
-      box-shadow:
-        0 24px 44px rgba(0, 0, 0, 0.42),
-        0 0 0 1px rgba(82, 183, 204, 0.32),
-        inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-      z-index: 2;
-    }
-
-    .photo-carousel.is-paused .slide:not(.is-active):not(.is-neighbor) {
-      filter: saturate(0.48) brightness(0.48);
-      opacity: 0.32;
-    }
-
-    .photo-carousel.is-paused .slide:hover {
-      transform: translateY(-8px) scale(0.92);
-      filter: saturate(0.95) brightness(0.92);
-      opacity: 0.82;
-      box-shadow:
-        0 22px 38px rgba(0, 0, 0, 0.38),
-        0 0 0 1px rgba(82, 183, 204, 0.28);
-    }
-
-    .photo-carousel.is-paused .slide.is-active:hover {
-      transform: translateY(-10px) scale(1.035);
-      filter: saturate(1.16) brightness(1.08);
-      opacity: 1;
-    }
-
-    .photo-carousel.is-paused .slide.is-prev:hover {
-      transform: translateX(-58%) translateY(-8px) scale(0.9);
-    }
-
-    .photo-carousel.is-paused .slide.is-next:hover {
-      transform: translateX(58%) translateY(-8px) scale(0.9);
-    }
-
-    .photo-carousel.is-paused .slide:hover img {
-      transform: scale(1.075);
-    }
-
-    .photo-carousel.is-stepping .slide.is-active {
-      animation: filmPulse 0.72s cubic-bezier(.2, .8, .2, 1);
-    }
-
-    @keyframes filmPulse {
-      0% { transform: translateY(0) scale(1); filter: brightness(1); }
-      42% { transform: translateY(-8px) scale(1.025); filter: brightness(1.08); }
-      100% { transform: translateY(-2px) scale(1); filter: brightness(1.04); }
-    }
-
-    .join-section {
-      margin-bottom: 72px;
-      padding: 72px;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 340px;
-      gap: 44px;
-      align-items: center;
-      border-radius: 8px;
-      background:
-        radial-gradient(circle at top left, rgba(82, 183, 204, 0.26), transparent 34%),
-        var(--deep-blue);
-      color: white;
-      box-shadow: var(--shadow);
-    }
-
-    .join-section .eyebrow, .join-section h2, .join-section p { color: white; }
-
-    .join-copy p {
-      color: rgba(255, 255, 255, 0.78);
-      max-width: 620px;
-      font-size: 1.06rem;
-      line-height: 1.85;
-    }
-
-    .group-number {
-      width: fit-content;
-      min-height: 76px;
-      margin-top: 30px;
-      padding: 14px 22px;
-      display: grid;
-      gap: 4px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-    }
-
-    .group-number span {
-      color: rgba(255, 255, 255, 0.72);
-      font-size: 0.9rem;
-    }
-
-    .group-number strong {
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      line-height: 1;
-      letter-spacing: 0.04em;
-    }
-
-    .join-actions {
-      margin-top: 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    .back-top {
-      min-height: 46px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 999px;
-      padding: 12px 20px;
-      background: rgba(255, 255, 255, 0.94);
-      color: var(--deep-blue);
-      font-weight: 900;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-    }
-
-    .back-top:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.16);
-    }
-
-    .qr-card {
-      border-radius: 8px;
-      padding: 18px;
-      background: white;
-      color: var(--deep-blue);
-      text-align: center;
-    }
-
-    .qr-card img {
-      width: 100%;
-      aspect-ratio: 1;
-      object-fit: contain;
-      border-radius: 8px;
-    }
-
-    .qr-card p {
-      margin: 14px 0 0;
-      font-weight: 900;
-    }
-
-    @media (max-width: 980px) {
-      .department-panel, .join-section {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-inner {
-        padding: 54px 0 86px;
-      }
-
-      .qr-card {
-        max-width: 340px;
-      }
-    }
-
-    @media (max-width: 620px) {
-      .hero-inner, .departments-section, .join-section {
-        width: min(100% - 28px, 1160px);
-      }
-
-      .hero-title {
-        font-size: clamp(2.32rem, 11.5vw, 4.15rem);
-      }
-
-      .student-union-line img {
-        width: clamp(52px, 15vw, 78px);
-        height: clamp(52px, 15vw, 78px);
-      }
-
-      .lead {
-        font-size: 1rem;
-      }
-
-      .department-tabs {
-        margin-inline: -14px;
-        padding-inline: 14px;
-      }
-
-      .department-panel {
-        padding: 22px;
-      }
-
-      .photo-carousel {
-        --slide-width: 76%;
-        --slide-gap: 14px;
-      }
-
-      .carousel-track {
-        padding-top: 46px;
-        padding-bottom: 46px;
-      }
-
-      .slide.is-prev {
-        transform: translateX(-56%) translateY(4px) scale(0.84);
-      }
-
-      .slide.is-next {
-        transform: translateX(56%) translateY(4px) scale(0.84);
-      }
-
-      .photo-carousel.is-paused .slide.is-prev:hover {
-        transform: translateX(-56%) translateY(-8px) scale(0.88);
-      }
-
-      .photo-carousel.is-paused .slide.is-next:hover {
-        transform: translateX(56%) translateY(-8px) scale(0.88);
-      }
-
-      .slide {
-        border-width: 4px;
-      }
-
-      .join-section {
-        padding: 44px 24px;
-      }
-    }
-  </style>
+  <title>集成电路学院学生工作</title>
+  <meta name="description" content="山东大学集成电路学院学生工作展示门户">
+  <script>
+    if (new URLSearchParams(location.search).get("skipIntro") === "1") {
+      document.documentElement.classList.add("skip-intro");
+    }
+  </script>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+  <div class="intro-screen" aria-hidden="true">
+    <div class="intro-mark">
+      <img src="assets/union-emblem.png" alt="">
+      <strong>集成电路学院学生工作</strong>
+      <div class="scan-line"></div>
+    </div>
+  </div>
+
+  <nav class="site-nav" aria-label="页面导航">
+    <a class="brand" href="index.html">
+      <img src="assets/union-emblem.png" alt="">
+      <span>集成电路学院</span>
+    </a>
+    <div class="nav-links">
+      <a href="undergraduate.html">本科生学生会</a>
+      <a href="graduate.html">研究生会</a>
+      <a href="organizations.html">学生组织</a>
+      <a href="#join-home">加入我们</a>
+    </div>
+  </nav>
+
   <main>
     <section class="hero" id="top">
       <div class="hero-bg" aria-hidden="true">
         <img src="assets/hero-building.jpg" alt="">
       </div>
-
       <div class="hero-inner">
-        <div class="hero-copy">
-          <p class="eyebrow">School of Integrated Circuits</p>
-          <h1 class="hero-title">
-            <span class="college-line">集成电路学院</span>
-            <span class="student-union-line">
-              <span>学生会</span>
-              <img src="assets/union-emblem.jpg" alt="学生会徽标">
-            </span>
-          </h1>
-          <p class="lead">在这里，我们一起服务同学、组织活动、记录校园，也把热爱与责任变成具体行动。</p>
-          <div class="hero-actions">
-            <a class="primary" href="#departments">部门介绍</a>
-            <a class="secondary" href="#join">加入我们</a>
-          </div>
-        </div>
+        <p class="intro-tag">School of Integrated Circuits</p>
+        <h1 class="hero-title">
+          <span>集成电路学院</span>
+          <span>学生工作</span>
+        </h1>
+        <p class="hero-copy">汇集本科生学生会、研究生会与学生组织，呈现学生工作架构、品牌活动与加入入口。</p>
+      </div>
+
+      <div class="portal-grid portal-grid-three" aria-label="三个入口">
+        <a class="portal-card" href="undergraduate.html">
+          <small>01</small>
+          <strong>本科生学生会</strong>
+          <p>五个部门协同服务本科生成长与校园生活。</p>
+        </a>
+        <a class="portal-card" href="graduate.html">
+          <small>02</small>
+          <strong>研究生会</strong>
+          <p>连接科研、学术交流、权益服务与职业发展。</p>
+        </a>
+        <a class="portal-card" href="organizations.html">
+          <small>03</small>
+          <strong>学生组织</strong>
+          <p>科创协会&amp;青年志愿者协会</p>
+        </a>
       </div>
     </section>
 
-    <section class="departments-section" id="departments">
-      <div class="section-title">
-        <p class="eyebrow">Departments</p>
-        <h2>部门介绍</h2>
-      </div>
-
-      <div class="department-tabs" aria-label="部门导航">
-        <a href="#general">综合事务部</a>
-        <a href="#academic">学术文化部</a>
-        <a href="#arts">艺体活动部</a>
-        <a href="#service">实践服务部</a>
-        <a href="#media">纪实联络部</a>
-      </div>
-
-      <div class="department-list">
-        <article class="department-panel" id="general">
-          <div class="department-copy">
-            <div class="department-heading"><p class="department-index">01</p><span>幕后枢纽</span></div>
-            <h3>综合事务部</h3>
-            <p class="department-slogan">学生会幕后枢纽，掌管物资财务与权益，更策划电竞、风筝节、躲猫猫等好玩活动。练技能、交朋友、找归属，温暖大家庭等你来。</p>
-            <p class="department-intro">综合事务部是学生会里的协调中枢，负责物资管理、财务报销、权益维护和部门联络，也会参与提案大赛、宿舍文化节、电竞比赛、风筝节等特色活动的策划与执行。</p>
-            <div class="feature-row"><span>物资财务</span><span>权益联络</span><span>活动统筹</span><span>温暖团队</span></div>
-          </div>
-          <div class="photo-carousel" data-speed="0.48" aria-label="综合事务部活动照片轮播">
-            <div class="carousel-track">
-              <div class="slide"><img src="assets/departments/general/general-01.jpg" alt="综合事务部活动照片 1"></div>
-              <div class="slide"><img src="assets/departments/general/general-02.jpg" alt="综合事务部活动照片 2"></div>
-              <div class="slide"><img src="assets/departments/general/general-04.jpg" alt="综合事务部活动照片 4"></div>
-              <div class="slide"><img src="assets/departments/general/general-05.jpg" alt="综合事务部活动照片 5"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="department-panel" id="academic">
-          <div class="department-copy">
-            <div class="department-heading"><p class="department-index">02</p><span>文化探索</span></div>
-            <h3>学术文化部</h3>
-            <p class="department-slogan">在趣味中碰撞思想，在文化中汲取力量。猜歌、诗词、棋赛、读书会，我们用多元活动连接彼此，让兴趣绽放。</p>
-            <p class="department-intro">学术文化部致力于丰富校园文化生活、提升同学综合素养，打造集知识交流、文化传播与兴趣培养于一体的平台，活动涵盖学术交流、趣味竞赛、传统文化、经验分享和创意实践。</p>
-            <div class="feature-row"><span>学术交流</span><span>文化活动</span><span>兴趣拓展</span><span>创意实践</span></div>
-          </div>
-          <div class="photo-carousel" data-speed="0.44" aria-label="学术文化部活动照片轮播">
-            <div class="carousel-track">
-              <div class="slide"><img src="assets/departments/academic/academic-01.jpg" alt="学术文化部活动照片 1"></div>
-              <div class="slide"><img src="assets/departments/academic/academic-02.jpg" alt="学术文化部活动照片 2"></div>
-              <div class="slide"><img src="assets/departments/academic/academic-03.jpg" alt="学术文化部活动照片 3"></div>
-              <div class="slide"><img src="assets/departments/academic/academic-04.jpg" alt="学术文化部活动照片 4"></div>
-              <div class="slide"><img src="assets/departments/academic/academic-05.jpg" alt="学术文化部活动照片 5"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="department-panel" id="arts">
-          <div class="department-copy">
-            <div class="department-heading"><p class="department-index">03</p><span>高光制造</span></div>
-            <h3>艺体活动部</h3>
-            <p class="department-slogan">从舞台到赛场，我们是“芯”青年的高光制造者。每一束追光、每一声呐喊，都由我们创造。</p>
-            <p class="department-intro">艺体活动部负责策划、组织和执行学院各类文艺与体育活动。从颁奖典礼暨文艺晚会到主题街演，从球类嘉年华到新生杯和运动会，精彩活动背后都有我们的身影。</p>
-            <div class="feature-row"><span>文艺晚会</span><span>体育赛事</span><span>街演舞台</span><span>运动会服务</span></div>
-          </div>
-          <div class="photo-carousel" data-speed="0.5" aria-label="艺体活动部活动照片轮播">
-            <div class="carousel-track">
-              <div class="slide"><img src="assets/departments/arts/arts-01.jpg" alt="艺体活动部活动照片 1"></div>
-              <div class="slide"><img src="assets/departments/arts/arts-02.jpg" alt="艺体活动部活动照片 2"></div>
-              <div class="slide"><img src="assets/departments/arts/arts-03.jpg" alt="艺体活动部活动照片 3"></div>
-              <div class="slide"><img src="assets/departments/arts/arts-04.jpg" alt="艺体活动部活动照片 4"></div>
-              <div class="slide"><img src="assets/departments/arts/arts-05.jpg" alt="艺体活动部活动照片 5"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="department-panel" id="service">
-          <div class="department-copy">
-            <div class="department-heading"><p class="department-index">04</p><span>实干发光</span></div>
-            <h3>实践服务部</h3>
-            <p class="department-slogan">以实践筑青春，以服务暖人心。走出课堂，奔赴山海，让你的大学不止于书本。知行合一，实干发光。</p>
-            <p class="department-intro">实践服务部是连接校园与同学、联动实践与服务的核心职能部门，统筹志愿服务、社会实践、公益项目和师生服务，让每一份热忱都有归宿，每一次付出都有意义。</p>
-            <div class="feature-row"><span>志愿服务</span><span>社会实践</span><span>师生桥梁</span><span>活动落地</span></div>
-          </div>
-          <div class="photo-carousel" data-speed="0.46" aria-label="实践服务部活动照片轮播">
-            <div class="carousel-track">
-              <div class="slide"><img src="assets/departments/service/service-01.jpg" alt="实践服务部活动照片 1"></div>
-              <div class="slide"><img src="assets/departments/service/service-02.jpg" alt="实践服务部活动照片 2"></div>
-              <div class="slide"><img src="assets/departments/service/service-03.jpg" alt="实践服务部活动照片 3"></div>
-              <div class="slide"><img src="assets/departments/service/service-04.jpg" alt="实践服务部活动照片 4"></div>
-              <div class="slide"><img src="assets/departments/service/service-05.jpg" alt="实践服务部活动照片 5"></div>
-            </div>
-          </div>
-        </article>
-
-        <article class="department-panel" id="media">
-          <div class="department-copy">
-            <div class="department-heading"><p class="department-index">05</p><span>记录传播</span></div>
-            <h3>纪实联络部</h3>
-            <p class="department-slogan">镜头定格现场，笔尖传递温度。摄影、新闻、推文、海报和芯视野校园电视台，带你做青春的记录人。</p>
-            <p class="department-intro">纪实联络部是学生会的“眼睛”与“声音”，负责现场记录、新闻采编、推文排版、视觉设计和视频新闻，用镜头和文字记录校园故事，让学生会的声音被更多人看见。</p>
-            <div class="feature-row"><span>摄影摄像</span><span>新闻采编</span><span>视觉设计</span><span>视频栏目</span></div>
-          </div>
-          <div class="photo-carousel" data-speed="0.42" aria-label="纪实联络部活动照片轮播">
-            <div class="carousel-track">
-              <div class="slide"><img src="assets/departments/media/media-01.jpg" alt="纪实联络部活动照片 1"></div>
-              <div class="slide"><img src="assets/departments/media/media-02.jpg" alt="纪实联络部活动照片 2"></div>
-              <div class="slide"><img src="assets/departments/media/media-03.jpg" alt="纪实联络部活动照片 3"></div>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
-
-    <section class="join-section" id="join">
-      <div class="join-copy">
-        <p class="eyebrow">Join Us</p>
-        <h2>加入我们</h2>
-        <p>扫描二维码加入纳新群，了解招新安排、部门信息和后续通知。</p>
-        <div class="group-number">
-          <span>纳新群号</span>
-          <strong>960240438</strong>
+    <section class="section home-join" id="join-home">
+      <div class="wide-panel join-hub">
+        <div class="join-hub-head">
+          <p class="intro-tag">Join Us</p>
+          <h2>加入我们</h2>
+          <p>选择你感兴趣的组织，扫码进入对应纳新群，获取招新安排、部门咨询、活动通知与报名信息。</p>
         </div>
-        <div class="join-actions">
-          <a class="back-top" href="#top">回到顶部</a>
+        <div class="join-directory" aria-label="纳新入口">
+          <article class="join-org-card featured">
+            <div class="join-qr">
+            <img src="assets/qr/undergraduate-union.png" alt="本科生学生会纳新群二维码">
+            </div>
+            <div class="join-info">
+              <small>Undergraduate Union</small>
+              <h3>本科生学生会</h3>
+              <strong>960240438</strong>
+              <p>统一纳新群，覆盖五个部门咨询与后续报名安排。</p>
+              <div class="join-tags"><span>综合事务部</span><span>学术文化部</span><span>艺体活动部</span><span>实践服务部</span><span>纪实联络部</span></div>
+            </div>
+          </article>
+          <article class="join-org-card">
+            <div class="join-qr">
+              <img src="assets/qr/innovation.png" alt="科创协会纳新群二维码">
+            </div>
+            <div class="join-info">
+              <small>Innovation</small>
+              <h3>科创协会</h3>
+              <strong>1065427452</strong>
+              <p>面向竞赛实践、技术培训、项目交流等方向。</p>
+              <div class="join-tags"><span>综合部</span><span>技术部</span><span>外联部</span></div>
+            </div>
+          </article>
+          <article class="join-org-card">
+            <div class="join-qr">
+              <img src="assets/qr/volunteer.png" alt="青志协纳新群二维码">
+            </div>
+            <div class="join-info">
+              <small>Volunteer</small>
+              <h3>青年志愿者协会</h3>
+              <strong>156544266</strong>
+              <p>面向志愿服务、公益行动和校园服务实践。</p>
+              <div class="join-tags"><span>执行部</span><span>宣传部</span><span>综合发展</span></div>
+            </div>
+          </article>
+          <article class="join-org-card pending">
+            <div class="join-placeholder">关注通知</div>
+            <div class="join-info">
+              <small>Graduate Union</small>
+              <h3>研究生会</h3>
+              <strong>学院通知发布</strong>
+              <p>研究生会招新安排将结合学院通知发布，欢迎关注学术交流、权益服务、宣传传播与文体活动方向。</p>
+              <div class="join-tags"><span>综合部</span><span>学术部</span><span>宣传部</span><span>文体部</span></div>
+            </div>
+          </article>
+          </div>
+        <div class="button-row">
+          <a class="button secondary" href="#top">回到顶部</a>
         </div>
-      </div>
-      <div class="qr-card">
-        <img src="assets/recruitment-qr.png" alt="山东大学集成电路学院学生会纳新群二维码">
-        <p>QQ 纳新群二维码</p>
       </div>
     </section>
   </main>
 
-  <script>
-    document.querySelectorAll(".photo-carousel").forEach((carousel) => {
-      const track = carousel.querySelector(".carousel-track");
-      if (!track) return;
-
-      const slides = Array.from(track.querySelectorAll(".slide"));
-      if (slides.length === 0) return;
-
-      let paused = false;
-      let wheelLocked = false;
-      let settleTimer = 0;
-      let touchResumeTimer = 0;
-      let currentIndex = 0;
-      let isMoving = false;
-      let touchStartX = 0;
-      let touchStartY = 0;
-      let touchPointerId = null;
-      let touchMode = "";
-      let suppressClick = false;
-
-      const updateActiveSlides = () => {
-        const previousIndex = (currentIndex - 1 + slides.length) % slides.length;
-        const nextIndex = (currentIndex + 1) % slides.length;
-
-        slides.forEach((slide, index) => {
-          slide.classList.toggle("is-active", index === currentIndex);
-          slide.classList.toggle("is-neighbor", index === previousIndex || index === nextIndex);
-          slide.classList.toggle("is-prev", index === previousIndex);
-          slide.classList.toggle("is-next", index === nextIndex);
-        });
-      };
-
-      const moveBySlide = (direction) => {
-        if (isMoving) return;
-        isMoving = true;
-        currentIndex = (currentIndex + direction + slides.length) % slides.length;
-        carousel.classList.add("is-stepping");
-        window.clearTimeout(settleTimer);
-        updateActiveSlides();
-
-        settleTimer = window.setTimeout(() => {
-          carousel.classList.remove("is-stepping");
-          isMoving = false;
-        }, 560);
-      };
-
-      const pauseForTouch = () => {
-        window.clearTimeout(touchResumeTimer);
-        paused = true;
-        carousel.classList.add("is-paused");
-      };
-
-      const resumeAfterTouch = () => {
-        window.clearTimeout(touchResumeTimer);
-        touchResumeTimer = window.setTimeout(() => {
-          paused = false;
-          carousel.classList.remove("is-paused");
-        }, 1500);
-      };
-
-      const autoplay = window.setInterval(() => {
-        if (!paused) {
-          moveBySlide(1);
-        }
-      }, 3000);
-
-      carousel.addEventListener("mouseenter", () => {
-        paused = true;
-        carousel.classList.add("is-paused");
-      });
-
-      carousel.addEventListener("mouseleave", () => {
-        paused = false;
-        carousel.classList.remove("is-paused");
-      });
-
-      carousel.addEventListener("wheel", (event) => {
-        if (!paused) return;
-        event.preventDefault();
-        if (wheelLocked) return;
-
-        const delta = Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
-        if (Math.abs(delta) < 2) return;
-
-        wheelLocked = true;
-        moveBySlide(delta > 0 ? 1 : -1);
-        window.setTimeout(() => {
-          wheelLocked = false;
-        }, 620);
-      }, { passive: false });
-
-      carousel.addEventListener("pointerdown", (event) => {
-        if (event.pointerType !== "touch") return;
-        touchPointerId = event.pointerId;
-        touchStartX = event.clientX;
-        touchStartY = event.clientY;
-        touchMode = "";
-        suppressClick = false;
-        pauseForTouch();
-      });
-
-      carousel.addEventListener("pointermove", (event) => {
-        if (event.pointerType !== "touch" || event.pointerId !== touchPointerId) return;
-
-        const deltaX = event.clientX - touchStartX;
-        const deltaY = event.clientY - touchStartY;
-        const absX = Math.abs(deltaX);
-        const absY = Math.abs(deltaY);
-
-        if (!touchMode && (absX > 12 || absY > 12)) {
-          touchMode = absX > absY * 1.25 ? "horizontal" : "vertical";
-        }
-
-        if (touchMode === "horizontal") {
-          event.preventDefault();
-        }
-      }, { passive: false });
-
-      const finishTouch = (event) => {
-        if (event.pointerType !== "touch" || event.pointerId !== touchPointerId) return;
-
-        const deltaX = event.clientX - touchStartX;
-        const deltaY = event.clientY - touchStartY;
-        const absX = Math.abs(deltaX);
-        const absY = Math.abs(deltaY);
-
-        if (touchMode === "horizontal" && absX > 42 && absX > absY * 1.2) {
-          suppressClick = true;
-          moveBySlide(deltaX < 0 ? 1 : -1);
-        }
-
-        touchPointerId = null;
-        touchMode = "";
-        resumeAfterTouch();
-      };
-
-      carousel.addEventListener("pointerup", finishTouch);
-      carousel.addEventListener("pointercancel", finishTouch);
-
-      carousel.addEventListener("click", (event) => {
-        if (suppressClick) {
-          suppressClick = false;
-          return;
-        }
-
-        const slide = event.target.closest(".slide");
-        if (!slide) return;
-        if (slide.classList.contains("is-prev")) {
-          moveBySlide(-1);
-        } else if (slide.classList.contains("is-next")) {
-          moveBySlide(1);
-        }
-      });
-
-      updateActiveSlides();
-      carousel.addEventListener("remove", () => window.clearInterval(autoplay));
-    });
-  </script>
+  <script src="assets/site.js"></script>
 </body>
 </html>
