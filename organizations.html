@@ -3,23 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>学生组织 | 集成电路学院学生组织</title>
+  <title>学生组织 | 集成电路学院学生工作</title>
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
   <nav class="site-nav" aria-label="页面导航">
-    <a class="brand" href="index.html"><img src="assets/union-emblem.png" alt=""><span>集成电路学院学生组织</span></a>
-    <div class="nav-links">
-      <a href="undergraduate.html">本科生学生会</a>
-      <a href="graduate.html">研究生会</a>
+    <a class="brand" href="undergraduate-home.html"><img src="assets/union-emblem.png" alt=""><span>本科生入口</span></a>
+    <div class="nav-links nav-links-undergraduate">
+      <a href="undergraduate.html">学生会</a>
       <a href="organizations.html" aria-current="page">学生组织</a>
-      <a href="index.html?skipIntro=1#join-home">加入我们</a>
+      <a href="join.html">加入我们</a>
+      <a href="index.html?skipIntro=1">返回首页</a>
     </div>
   </nav>
 
   <main>
-    <header class="page-hero">
-      <div class="page-actions"><a class="back-home" href="index.html?skipIntro=1">返回首页</a></div>
+    <header class="page-hero" id="top">
+      <div class="page-actions"><a class="back-home" href="undergraduate-home.html">返回本科生入口</a></div>
       <p class="intro-tag">Student Organizations</p>
       <h1>学生组织</h1>
       <p>学院学生组织连接科创竞赛、技术实践、志愿服务与公益行动，让同学们在专业探索和校园服务中找到同行伙伴。</p>
@@ -54,11 +54,6 @@
                 <strong>芯火竞创</strong>
                 <span>赛事资讯、培训通知、成果展示与经验分享的科创实践平台。</span>
               </div>
-              <div class="slide org-qr-slide">
-                <img src="assets/qr/innovation.png" alt="科创协会纳新群二维码">
-                <strong>科协纳新群</strong>
-                <span>1065427452</span>
-              </div>
             </div>
           </div>
         </article>
@@ -88,11 +83,6 @@
                 <strong>轻松协作</strong>
                 <span>执行、宣传、综合发展协同推进活动，让志愿服务更有组织感。</span>
               </div>
-              <div class="slide org-qr-slide">
-                <img src="assets/qr/volunteer.png" alt="青志协纳新群二维码">
-                <strong>青志协纳新群</strong>
-                <span>156544266</span>
-              </div>
             </div>
           </div>
         </article>
@@ -100,19 +90,38 @@
     </section>
 
     <section class="section">
-      <div class="wide-panel sub-join">
+      <div class="wide-panel sub-join org-sub-join">
         <div>
           <p class="intro-tag">Join Organizations</p>
           <h2>加入学生组织</h2>
-          <p>科创协会与青年志愿者协会纳新入口已在上方展示。欢迎根据兴趣方向加入相应群聊，了解招新安排、活动通知与日常工作内容。</p>
-          <div class="button-row"><a class="button" href="index.html?skipIntro=1#join-home">查看总加入入口</a></div>
+          <p>科创协会与青年志愿者协会纳新入口展示在右侧。欢迎根据兴趣方向加入相应群聊，了解招新安排、活动通知与日常工作内容。</p>
+          <div class="button-row"><a class="button" href="#top">回到顶部</a></div>
         </div>
-        <div class="placeholder-join">科创实践<br>志愿服务</div>
+        <div class="org-join-mini-list" aria-label="学生组织纳新信息">
+          <article class="org-join-mini">
+            <img src="assets/qr/innovation.png" alt="科创协会纳新群二维码">
+            <div>
+              <small>Innovation</small>
+              <h3>科创协会</h3>
+              <strong>1065427452</strong>
+              <p>竞赛实践、技术培训与项目交流。</p>
+            </div>
+          </article>
+          <article class="org-join-mini">
+            <img src="assets/qr/volunteer.png" alt="青年志愿者协会纳新群二维码">
+            <div>
+              <small>Volunteer</small>
+              <h3>青年志愿者协会</h3>
+              <strong>156544266</strong>
+              <p>志愿服务、公益行动与校园服务。</p>
+            </div>
+          </article>
+        </div>
       </div>
     </section>
   </main>
 
-  <footer>山东大学集成电路学院学生组织</footer>
+  <footer>山东大学集成电路学院本科生学生工作</footer>
   <script src="assets/site.js"></script>
 </body>
 </html>

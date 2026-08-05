@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>集成电路学院学生工作</title>
-  <meta name="description" content="山东大学集成电路学院学生工作展示门户">
+  <meta name="description" content="山东大学集成电路学院学生工作身份入口">
   <script>
     if (new URLSearchParams(location.search).get("skipIntro") === "1") {
       document.documentElement.classList.add("skip-intro");
@@ -22,20 +22,14 @@
   </div>
 
   <nav class="site-nav" aria-label="页面导航">
-    <a class="brand" href="index.html">
+    <a class="brand" href="index.html?skipIntro=1">
       <img src="assets/union-emblem.png" alt="">
       <span>集成电路学院</span>
     </a>
-    <div class="nav-links">
-      <a href="undergraduate.html">本科生学生会</a>
-      <a href="graduate.html">研究生会</a>
-      <a href="organizations.html">学生组织</a>
-      <a href="#join-home">加入我们</a>
-    </div>
   </nav>
 
   <main>
-    <section class="hero" id="top">
+    <section class="hero identity-hero entry-hero" id="top">
       <div class="hero-bg" aria-hidden="true">
         <img src="assets/hero-building.jpg" alt="">
       </div>
@@ -45,85 +39,16 @@
           <span>集成电路学院</span>
           <span>学生工作</span>
         </h1>
-        <p class="hero-copy">汇集本科生学生会、研究生会与学生组织，呈现学生工作架构、品牌活动与加入入口。</p>
-      </div>
-
-      <div class="portal-grid portal-grid-three" aria-label="三个入口">
-        <a class="portal-card" href="undergraduate.html">
-          <small>01</small>
-          <strong>本科生学生会</strong>
-          <p>五个部门协同服务本科生成长与校园生活。</p>
-        </a>
-        <a class="portal-card" href="graduate.html">
-          <small>02</small>
-          <strong>研究生会</strong>
-          <p>连接科研、学术交流、权益服务与职业发展。</p>
-        </a>
-        <a class="portal-card" href="organizations.html">
-          <small>03</small>
-          <strong>学生组织</strong>
-          <p>科创协会&amp;青年志愿者协会</p>
-        </a>
-      </div>
-    </section>
-
-    <section class="section home-join" id="join-home">
-      <div class="wide-panel join-hub">
-        <div class="join-hub-head">
-          <p class="intro-tag">Join Us</p>
-          <h2>加入我们</h2>
-          <p>选择你感兴趣的组织，扫码进入对应纳新群，获取招新安排、部门咨询、活动通知与报名信息。</p>
-        </div>
-        <div class="join-directory" aria-label="纳新入口">
-          <article class="join-org-card featured">
-            <div class="join-qr">
-            <img src="assets/qr/undergraduate-union.png" alt="本科生学生会纳新群二维码">
-            </div>
-            <div class="join-info">
-              <small>Undergraduate Union</small>
-              <h3>本科生学生会</h3>
-              <strong>960240438</strong>
-              <p>统一纳新群，覆盖五个部门咨询与后续报名安排。</p>
-              <div class="join-tags"><span>综合事务部</span><span>学术文化部</span><span>艺体活动部</span><span>实践服务部</span><span>纪实联络部</span></div>
-            </div>
-          </article>
-          <article class="join-org-card">
-            <div class="join-qr">
-              <img src="assets/qr/innovation.png" alt="科创协会纳新群二维码">
-            </div>
-            <div class="join-info">
-              <small>Innovation</small>
-              <h3>科创协会</h3>
-              <strong>1065427452</strong>
-              <p>面向竞赛实践、技术培训、项目交流等方向。</p>
-              <div class="join-tags"><span>综合部</span><span>技术部</span><span>外联部</span></div>
-            </div>
-          </article>
-          <article class="join-org-card">
-            <div class="join-qr">
-              <img src="assets/qr/volunteer.png" alt="青志协纳新群二维码">
-            </div>
-            <div class="join-info">
-              <small>Volunteer</small>
-              <h3>青年志愿者协会</h3>
-              <strong>156544266</strong>
-              <p>面向志愿服务、公益行动和校园服务实践。</p>
-              <div class="join-tags"><span>执行部</span><span>宣传部</span><span>综合发展</span></div>
-            </div>
-          </article>
-          <article class="join-org-card pending">
-            <div class="join-placeholder">关注通知</div>
-            <div class="join-info">
-              <small>Graduate Union</small>
-              <h3>研究生会</h3>
-              <strong>学院通知发布</strong>
-              <p>研究生会招新安排将结合学院通知发布，欢迎关注学术交流、权益服务、宣传传播与文体活动方向。</p>
-              <div class="join-tags"><span>综合部</span><span>学术部</span><span>宣传部</span><span>文体部</span></div>
-            </div>
-          </article>
-          </div>
-        <div class="button-row">
-          <a class="button secondary" href="#top">回到顶部</a>
+        <p class="hero-copy">请选择你的身份进入对应页面，快速查看组织架构、代表活动与纳新入口。</p>
+        <div class="identity-actions" aria-label="身份选择">
+          <a class="identity-card" href="undergraduate-home.html">
+            <small>Undergraduate</small>
+            <strong>我是本科生</strong>
+          </a>
+          <a class="identity-card graduate" href="graduate.html">
+            <small>Graduate</small>
+            <strong>我是研究生</strong>
+          </a>
         </div>
       </div>
     </section>
