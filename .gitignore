@@ -1,0 +1,5 @@
+﻿# 临时/中间产物（已上传COS或本地分析用）
+assets_webp/
+compress_webp_report.json
+cos_upload_report.json
+html_backup_cos/
