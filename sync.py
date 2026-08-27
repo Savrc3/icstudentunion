@@ -53,7 +53,7 @@ def gh_api(path):
 
 def download_file(repo_path):
     """从 GitHub 下载文件内容"""
-    content = gh_api(f"repos/{repo_path}/contents --jq '.content'")
+    content = gh_api(f"repos/{repo_path} --jq '.content'")
     if not content:
         return None
     return base64.b64decode(content).decode("utf-8")
