@@ -15,7 +15,7 @@ import os
 import re
 import subprocess
 import sys
-import tempfile
+import base64
 from pathlib import Path
 
 # ========== 配置 ==========
@@ -53,22 +53,10 @@ def gh_api(path):
 
 def download_file(repo_path):
     """从 GitHub 下载文件内容"""
-    content = gh_api(f"repos/{repo_path}/contents/{path} --jq '.content'")
+    content = gh_api(f"repos/{repo_path}/contents --jq '.content'")
     if not content:
         return None
-    import base64
     return base64.b64decode(content).decode("utf-8")
-
-
-def download_binary(repo_path, local_path):
-    """从 GitHub 下载二进制文件"""
-    import base64
-    content = gh_api(f"repos/{repo_path}/contents/{repo_path} --jq '.content'")
-    if content:
-        local_path.parent.mkdir(parents=True, exist_ok=True)
-        local_path.write_bytes(base64.b64decode(content))
-        return True
-    return False
 
 
 def load_cos_map():
@@ -89,6 +77,44 @@ def save_cos_map(cos_map):
 def is_image(path):
     """判断是否是图片文件"""
     return Path(path).suffix.lower() in IMAGE_EXTS
+
+
+def upload_to_cos(local_path, cos_key):
+    """上传文件到 COS"""
+    sid = os.environ.get("COS_SECRET_ID")
+    skey = os.environ.get("COS_SECRET_KEY")
+    if not sid or not skey:
+        print("    警告: COS_SECRET_ID/COS_SECRET_KEY 未设置，跳过上传")
+        return False
+    
+    try:
+        from qcloud_cos import CosConfig, CosS3Client
+        cfg = CosConfig(Region="ap-beijing", SecretId=sid, SecretKey=skey, Scheme="https")
+        client = CosS3Client(cfg)
+        
+        # 根据扩展名设置 ContentType
+        ext = Path(local_path).suffix.lower()
+        content_type = {
+            ".css": "text/css",
+            ".js": "application/javascript",
+            ".jpg": "image/jpeg",
+            ".jpeg": "image/jpeg",
+            ".png": "image/png",
+            ".webp": "image/webp",
+            ".gif": "image/gif",
+        }.get(ext, "application/octet-stream")
+        
+        with open(local_path, "rb") as f:
+            client.put_object(
+                Bucket="tuchuang-1441466534",
+                Key=cos_key,
+                Body=f,
+                ContentType=content_type
+            )
+        return True
+    except Exception as e:
+        print(f"    上传失败: {e}")
+        return False
 
 
 # ========== 主要逻辑 ==========
@@ -112,7 +138,6 @@ def check_upstream():
 
 def get_local_last_commit():
     """获取本地最后同步的提交 SHA"""
-    # 从 git log 中查找同步相关的提交
     log = run("git log --oneline -20", check=False)
     for line in log.split("\n"):
         if "sync" in line.lower() or "同步" in line:
@@ -162,8 +187,16 @@ def sync_assets(cos_map):
             print(f"  跳过 {asset}（下载失败）")
             continue
         
-        (FORK_DIR / asset).write_text(content, encoding="utf-8")
+        # 写入本地
+        local_path = FORK_DIR / asset
+        local_path.write_text(content, encoding="utf-8")
         print(f"  OK: {asset}")
+        
+        # 上传到 COS（如果设置了密钥）
+        if os.environ.get("COS_SECRET_ID"):
+            cos_key = asset
+            if upload_to_cos(local_path, cos_key):
+                print(f"    已上传到 COS: {cos_key}")
 
 
 def sync_images():
@@ -219,7 +252,7 @@ def sync_images():
                 img.save(out_path, "WEBP", quality=82)
             elif ext in (".jpg", ".jpeg"):
                 # JPEG → 压缩 JPEG
-                out_name = img_path.replace(".jpeg", ".jpg").replace(".jpg", ".jpg")
+                out_name = img_path.replace(".jpeg", ".jpg")
                 out_path = FORK_DIR / out_name
                 img.save(out_path, "JPEG", quality=80)
             else:
@@ -231,16 +264,11 @@ def sync_images():
             out_path = local_path
         
         # 上传到 COS
-        result = run(
-            f'python "{FORK_DIR.parent.parent.parent / ".dsh" / "skills" / "sync-icstudentunion-upstream" / "scripts" / "upload_cos.py"}" "{out_path}"',
-            check=False
-        )
-        
-        if "上传成功" in result or "OK" in result:
+        if upload_to_cos(out_path, out_name):
             cos_map[img_path] = out_name
             print(f"    OK: {out_name}")
         else:
-            print(f"    上传失败: {result}")
+            print(f"    上传失败")
     
     save_cos_map(cos_map)
     return cos_map
