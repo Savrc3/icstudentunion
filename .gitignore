@@ -1,5 +1,15 @@
-﻿# 临时/中间产物（已上传COS或本地分析用）
+# 图片已全部上传 COS，本地不需要提交
+assets/
 assets_webp/
+
+# 临时/中间产物
+*.bak
+*.bak.*
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 历史报告
+compress_report.json
 compress_webp_report.json
 cos_upload_report.json
-html_backup_cos/
