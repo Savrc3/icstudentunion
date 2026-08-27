@@ -52,11 +52,19 @@ def gh_api(path):
 
 
 def download_file(repo_path):
-    """从 GitHub 下载文件内容"""
+    """从 GitHub 下载文件内容（文本文件）"""
     content = gh_api(f"repos/{repo_path} --jq '.content'")
     if not content:
         return None
     return base64.b64decode(content).decode("utf-8")
+
+
+def download_binary(repo_path):
+    """从 GitHub 下载二进制文件"""
+    content = gh_api(f"repos/{repo_path} --jq '.content'")
+    if not content:
+        return None
+    return base64.b64decode(content)
 
 
 def load_cos_map():
@@ -230,7 +238,7 @@ def sync_images():
         print(f"  处理: {img_path}")
         
         # 下载
-        content = download_file(f"{UPSTREAM_REPO}/contents/{img_path}")
+        content = download_binary(f"{UPSTREAM_REPO}/contents/{img_path}")
         if not content:
             print(f"    下载失败，跳过")
             continue
@@ -238,12 +246,12 @@ def sync_images():
         # 保存原始文件
         local_path = FORK_DIR / img_path
         local_path.parent.mkdir(parents=True, exist_ok=True)
-        local_path.write_bytes(content.encode("utf-8") if isinstance(content, str) else content)
+        local_path.write_bytes(content)
         
         # 压缩
         ext = Path(img_path).suffix.lower()
         try:
-            img = Image.open(io.BytesIO(content if isinstance(content, bytes) else content.encode()))
+            img = Image.open(io.BytesIO(content))
             
             if ext == ".png":
                 # PNG → WebP
