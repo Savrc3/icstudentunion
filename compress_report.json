@@ -1,0 +1,14 @@
+[
+  {
+    "rel": "brand-wordmark.png",
+    "out": "brand-wordmark.webp",
+    "orig": 457168,
+    "new": 109262
+  },
+  {
+    "rel": "intro-splash.jpg",
+    "out": "intro-splash.jpg",
+    "orig": 410648,
+    "new": 126440
+  }
+]
