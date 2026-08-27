@@ -1,4 +1,11 @@
-document.documentElement.classList.add("js-ready");
+﻿document.documentElement.classList.add("js-ready");
+
+const introScreen = document.querySelector(".intro-screen");
+if (introScreen && !document.documentElement.classList.contains("skip-intro")) {
+  window.setTimeout(() => {
+    introScreen.classList.add("is-hidden");
+  }, 1500);
+}
 
 document.querySelectorAll("[data-delay]").forEach((item) => {
   const delay = item.getAttribute("data-delay");
@@ -213,3 +220,4 @@ document.querySelectorAll(".photo-carousel").forEach((carousel) => {
     scheduleAutoplay();
   }
 });
+

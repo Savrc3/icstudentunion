@@ -26,6 +26,7 @@
  "assets/organizations/innovation/innovation-02.png": "assets/organizations/innovation/innovation-02.webp",
  "assets/qr/innovation.png": "assets/qr/innovation.webp",
  "assets/qr/undergraduate-union.png": "assets/qr/undergraduate-union.webp",
+ "assets/qr/graduate-union.png": "assets/qr/graduate-union.webp",
  "assets/qr/volunteer.png": "assets/qr/volunteer.webp",
  "assets/undergraduate/academic-culture/academic-culture-01.jpg": "assets/undergraduate/academic-culture/academic-culture-01.jpg",
  "assets/undergraduate/academic-culture/academic-culture-02.jpg": "assets/undergraduate/academic-culture/academic-culture-02.jpg",
@@ -49,5 +50,13 @@
  "assets/undergraduate/practice-service/practice-service-03.jpg": "assets/undergraduate/practice-service/practice-service-03.jpg",
  "assets/undergraduate/practice-service/practice-service-04.jpg": "assets/undergraduate/practice-service/practice-service-04.jpg",
  "assets/undergraduate/practice-service/practice-service-05.jpg": "assets/undergraduate/practice-service/practice-service-05.jpg",
- "assets/union-emblem.png": "assets/union-emblem.webp"
+ "assets/union-emblem.png": "assets/union-emblem.webp",
+ "assets/teams/basketball/basketball-01.jpeg": "assets/teams/basketball/basketball-01.jpg",
+ "assets/teams/basketball/basketball-02.jpeg": "assets/teams/basketball/basketball-02.jpg",
+ "assets/teams/basketball/basketball-03.jpeg": "assets/teams/basketball/basketball-03.jpg",
+ "assets/teams/basketball/basketball-04.jpeg": "assets/teams/basketball/basketball-04.jpg",
+ "assets/teams/basketball/basketball-05.jpeg": "assets/teams/basketball/basketball-05.jpg",
+ "assets/teams/qr/basketball-qr.png": "assets/teams/qr/basketball-qr.webp",
+ "assets/teams/qr/football-qr.png": "assets/teams/qr/football-qr.webp",
+ "assets/teams/qr/table-tennis-qr.png": "assets/teams/qr/table-tennis-qr.webp"
 }
